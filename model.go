@@ -1,6 +1,8 @@
 package main
 
-import "time"
+import (
+	"time"
+)
 
 type Kadai struct {
 	_type    string
@@ -33,19 +35,4 @@ func (kg *kadaiGetter) GetAll() ([]Kadai, error) {
 
 func NewKadaiGetter() KadaiGetter {
 	return &kadaiGetter{}
-}
-
-type Notifier interface {
-	Notify(ks []Kadai) error
-}
-
-type notifier struct{}
-
-func (n *notifier) Notify(ks []Kadai) error {
-	// TODO: implement
-	return nil
-}
-
-func NewNotifier() Notifier {
-	return &notifier{}
 }

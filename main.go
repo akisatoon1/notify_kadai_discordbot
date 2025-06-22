@@ -2,8 +2,14 @@ package main
 
 import (
 	"log"
+	"os"
 	"time"
+
+	"github.com/joho/godotenv"
 )
+
+var TOKEN string
+var CHANNEL_ID string
 
 func main() {
 	if err := process(); err != nil {
@@ -11,10 +17,16 @@ func main() {
 	}
 }
 
+func init() {
+	_ = godotenv.Load()
+	TOKEN = os.Getenv("DISCORD_TOKEN")
+	CHANNEL_ID = os.Getenv("CHANNEL_ID")
+}
+
 func process() error {
 	getter := NewKadaiGetter()
 
-	notifier := NewNotifier()
+	notifier := NewNotifier(TOKEN, CHANNEL_ID)
 
 	kadais, err := getter.GetAll()
 	if err != nil {
