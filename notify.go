@@ -47,9 +47,16 @@ func createMsg(ks []Kadai) string {
 			msg += "-------------------------------\n"
 			msg += "タイトル:	" + k.title + "\n"
 			msg += "科目:			 " + k.course + "\n"
-			msg += "締切:			 " + k.deadline.Format(time.DateTime) + "\n"
+			msg += "締切:			 " + format(k.deadline) + "\n"
 		}
 	}
 	msg += "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"
 	return msg
+}
+
+func format(t *time.Time) string {
+	if t == nil {
+		return "なし"
+	}
+	return t.Format(time.DateTime)
 }
