@@ -10,6 +10,8 @@ import (
 
 var TOKEN string
 var CHANNEL_ID string
+var STUDENT_ID string
+var PASSWORD string
 
 func main() {
 	if err := process(); err != nil {
@@ -21,10 +23,12 @@ func init() {
 	_ = godotenv.Load()
 	TOKEN = os.Getenv("DISCORD_TOKEN")
 	CHANNEL_ID = os.Getenv("CHANNEL_ID")
+	STUDENT_ID = os.Getenv("STUDENT_ID")
+	PASSWORD = os.Getenv("PASSWORD")
 }
 
 func process() error {
-	getter := NewKadaiGetter()
+	getter := NewKadaiGetter(STUDENT_ID, PASSWORD)
 
 	notifier := NewNotifier(TOKEN, CHANNEL_ID)
 
