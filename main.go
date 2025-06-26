@@ -49,11 +49,11 @@ func process() error {
 
 	var notified []Kadai
 	for _, k := range kadais {
-		// 締め切りまで2日以内の課題をフィルター
+		// 締め切りまで3日以内の課題をフィルター
 		if k.deadline != nil && k.deadline.Before(time.Now().Add(48*time.Hour)) {
 			notified = append(notified, k)
 		}
 	}
 
-	return notifier.Notify(notified)
+	return notifier.Notify("締め切りが近い課題です。", notified)
 }

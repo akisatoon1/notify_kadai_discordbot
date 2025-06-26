@@ -7,7 +7,7 @@ import (
 )
 
 type Notifier interface {
-	Notify(ks []Kadai) error
+	Notify(prefix string, ks []Kadai) error
 }
 
 type notifier struct {
@@ -22,14 +22,14 @@ func NewNotifier(token, channelID string) Notifier {
 	}
 }
 
-func (n *notifier) Notify(ks []Kadai) error {
+func (n *notifier) Notify(prefix string, ks []Kadai) error {
 	session, err := discordgo.New("Bot " + n.token)
 	if err != nil {
 		return err
 	}
 	defer session.Close()
 
-	_, err = session.ChannelMessageSend(n.channelID, createMsg(ks))
+	_, err = session.ChannelMessageSend(n.channelID, createMsg(prefix, ks))
 	if err != nil {
 		return err
 	}
@@ -37,8 +37,10 @@ func (n *notifier) Notify(ks []Kadai) error {
 	return nil
 }
 
-func createMsg(ks []Kadai) string {
-	msg := time.Now().Format(time.DateTime) + "\n"
+func createMsg(prefix string, ks []Kadai) string {
+	msg := prefix + "\n"
+
+	msg += time.Now().Format(time.DateTime) + "\n"
 	if len(ks) == 0 {
 		msg += "現在、課題はありません。\n"
 	} else {

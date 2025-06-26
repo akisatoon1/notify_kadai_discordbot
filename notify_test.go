@@ -14,12 +14,12 @@ func TestNotify(t *testing.T) {
 		NewKadai("レポート", "テストnil課題", "数理基礎1", nil, nil),
 	}
 
-	err := n.Notify(kadais)
+	err := n.Notify("this is prefix", kadais)
 	if err != nil {
 		t.Errorf("Notify failed: %v", err)
 	}
 
-	err = n.Notify([]Kadai{})
+	err = n.Notify("this is prefix", []Kadai{})
 	if err != nil {
 		t.Errorf("Notify with empty list failed: %v", err)
 	}
