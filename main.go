@@ -50,7 +50,7 @@ func process() error {
 	var notified []Kadai
 	for _, k := range kadais {
 		// 締め切りまで3日以内の課題をフィルター
-		if k.deadline != nil && k.deadline.Before(time.Now().Add(48*time.Hour)) {
+		if k.deadline != nil && k.deadline.Before(time.Now().Add(72*time.Hour)) {
 			notified = append(notified, k)
 		}
 	}
