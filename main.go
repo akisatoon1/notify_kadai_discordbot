@@ -20,9 +20,12 @@ func main() {
 }
 
 func init() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("環境変数の読み込みに失敗しました。.envファイルが存在するか確認してください。", err)
+	if len(os.Args) == 2 && os.Args[1] == "-t" {
+		log.Println("テストモードで実行中です。.envファイルから環境変数を読み込みます。")
+		err := godotenv.Load()
+		if err != nil {
+			log.Fatal("環境変数の読み込みに失敗しました。.envファイルが存在するか確認してください。", err)
+		}
 	}
 
 	TOKEN = os.Getenv("DISCORD_TOKEN")
