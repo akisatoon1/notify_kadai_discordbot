@@ -1,6 +1,9 @@
 package main
 
-import "time"
+import (
+	"notify_kadai_discordbot/internal/ds"
+	"time"
+)
 
 func Process() error {
 	c, err := LoadConfig()
@@ -19,7 +22,7 @@ func Process() error {
 
 	var notified []Kadai
 	for _, k := range kadais {
-		if filter(k) {
+		if filter(k, c.ExcludedCourses) {
 			notified = append(notified, k)
 		}
 	}
@@ -27,7 +30,12 @@ func Process() error {
 	return notifier.Notify("締め切りが近い課題です。", notified)
 }
 
-// 締め切りまで3日以内の課題をフィルター
-func filter(k Kadai) bool {
-	return k.deadline != nil && k.deadline.Before(time.Now().Add(72*time.Hour))
+func filter(k Kadai, exc ds.Set) bool {
+	// 締め切りまで3日以内の課題
+	deadlineCond := k.deadline != nil && k.deadline.Before(time.Now().Add(72*time.Hour))
+
+	// 除外コースに含まれない課題
+	excludedCond := !exc.Contains(k.course)
+
+	return deadlineCond && excludedCond
 }
