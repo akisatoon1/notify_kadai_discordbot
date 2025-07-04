@@ -2,10 +2,7 @@ package main
 
 import (
 	"log"
-	"os"
 	"time"
-
-	"github.com/joho/godotenv"
 )
 
 var TOKEN string
@@ -19,31 +16,15 @@ func main() {
 	}
 }
 
-func init() {
-	if len(os.Args) == 2 && os.Args[1] == "-t" {
-		log.Println("テストモードで実行中です。.envファイルから環境変数を読み込みます。")
-		err := godotenv.Load()
-		if err != nil {
-			log.Fatal("環境変数の読み込みに失敗しました。.envファイルが存在するか確認してください。", err)
-		}
-	}
-
-	TOKEN = os.Getenv("DISCORD_TOKEN")
-	CHANNEL_ID = os.Getenv("CHANNEL_ID")
-	STUDENT_ID = os.Getenv("STUDENT_ID")
-	PASSWORD = os.Getenv("PASSWORD")
-
-	if TOKEN == "" || CHANNEL_ID == "" || STUDENT_ID == "" || PASSWORD == "" {
-		log.Fatal("環境変数が設定されていません。DISCORD_TOKEN, CHANNEL_ID, STUDENT_ID, PASSWORDを設定してください。")
-	}
-
-	log.Println("環境変数の読み込みに成功しました。")
-}
-
 func process() error {
-	getter := NewKadaiGetter(STUDENT_ID, PASSWORD)
+	c, err := LoadConfig()
+	if err != nil {
+		return err
+	}
 
-	notifier := NewNotifier(TOKEN, CHANNEL_ID)
+	getter := NewKadaiGetter(c.StudentID, c.Password)
+
+	notifier := NewNotifier(c.DiscordToken, c.ChannelID)
 
 	kadais, err := getter.GetAll()
 	if err != nil {
