@@ -11,3 +11,14 @@ CHANNEL_ID=example
 STUDENT_ID=example
 PASSWORD=example
 ```
+
+## Settings
+### Exclude specify courses
+You can select courses which this app don't need to notify.
+  
+You use `--exclude {filepath}` option to exclude.
+```
+your_course_name_1
+your_course_name_2
+your_course_name_3
+```
