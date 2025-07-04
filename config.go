@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -16,7 +17,9 @@ type Config struct {
 }
 
 func LoadConfig() (*Config, error) {
-	if err := env(); err != nil {
+	f := loadFlags()
+
+	if err := env(f.TestMode); err != nil {
 		return nil, err
 	}
 
@@ -27,18 +30,48 @@ func LoadConfig() (*Config, error) {
 		Password:     os.Getenv("PASSWORD"),
 	}
 
-	if config.DiscordToken == "" || config.ChannelID == "" || config.StudentID == "" || config.Password == "" {
-		return nil, fmt.Errorf("環境変数が設定されていません。DISCORD_TOKEN, CHANNEL_ID, STUDENT_ID, PASSWORDを設定してください。")
+	if err := config.validate(); err != nil {
+		return nil, err
 	}
 
 	return config, nil
 }
 
-func env() error {
-	if len(os.Args) == 2 && os.Args[1] == "-t" {
+func env(testMode bool) error {
+	if testMode {
 		log.Println("テストモードで実行中です。.envファイルから環境変数を読み込みます。")
 		err := godotenv.Load()
 		return err
 	}
 	return nil
+}
+
+func (c *Config) validate() error {
+	if c.DiscordToken == "" {
+		return fmt.Errorf("DISCORD_TOKENが設定されていません")
+	}
+	if c.ChannelID == "" {
+		return fmt.Errorf("CHANNEL_IDが設定されていません")
+	}
+	if c.StudentID == "" {
+		return fmt.Errorf("STUDENT_IDが設定されていません")
+	}
+	if c.Password == "" {
+		return fmt.Errorf("PASSWORDが設定されていません")
+	}
+	return nil
+}
+
+type flags struct {
+	TestMode bool
+}
+
+func loadFlags() *flags {
+	t := flag.Bool("t", false, "テストモードで実行")
+	flag.Parse()
+
+	f := &flags{}
+	f.TestMode = *t
+
+	return f
 }
